@@ -10,7 +10,9 @@ socket.on('newMessage', function (message) {
     let li = jQuery('<li></li>');
     li.text(`${message.from}: ${message.text}`);
 
-    jQuery('#messages').append(li);
+    if (message.text != '') {
+        jQuery('#messages').append(li);
+    }
 });
 
 socket.on('newLocationMessage', function (message) {

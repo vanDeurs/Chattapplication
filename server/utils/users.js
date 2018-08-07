@@ -12,15 +12,12 @@ class Users {
         if (user) {
             this.users = this.users.filter((user) => user.id !== id);
         }
-
         return user;
     }
     getUser (id) {
         return this.users.filter((user) => user.id === id)[0];
-
     }
     getUserList (room) {
-        console.log('useeers', this.users);
         const users = this.users.filter((user) => user.room === room);
         const namesArray = users.map((user) => user.name);
 

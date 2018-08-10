@@ -20,19 +20,17 @@ app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
 
-    socket.emit('updateRoomsList', rooms.getRooms());
+    socket.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms()))
+    users.getAllUsers(rooms.getRooms());
 
     
     socket.on('join', (params, callback) => {
-        console.log('New user connected!');
         
         if (!isRealString(params.name) || !isRealString(params.room)) {
-            return callback('Name and Room name are required.');
+            return callback('Name and Room are required.');
         }
         rooms.addRoom(params.room); // Add room to array of rooms
-        // rooms.addUserToRoom(socket.id, params.name, params.room); // Add user to array of users in that room
         socket.emit('updateUsersPerRoom', users.getUserList(params.room)) // Update the list of users per room
-
 
         socket.join(params.room); // Create the room
         users.removeUser(socket.id); // Remove from any other rooms
@@ -40,7 +38,7 @@ io.on('connection', (socket) => {
 
         io.to(params.room).emit('updateUserList', users.getUserList(params.room)); // Update the user list
         socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app!')); // Welcome message to user
-        // socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`)); // Emit that a user has joined
+        socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`)); // Emit that a user has joined
         callback();
         
     });
@@ -61,28 +59,35 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('userDisconnects', () => {
-        console.log('User disconnects!');
-        socket.emit('updateRoomsList', rooms.getRooms());
-        const user = users.removeUser(socket.id);
-    
-        io.to(user.room).emit('updateUserList', users.getUserList(user.room));
-        io.to(user.room).emit('updateUsersPerRoom', users.getUserList(user.room));
-        io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
-    })
-
     socket.on('disconnect', () => {
-        socket.emit('updateRoomsList', rooms.getRooms());
+        socket.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms()))
 
-        if (rooms.getRooms().length > 0) {
-            console.log(('More rooms than 1', rooms.getRooms() ));
+        const user = users.removeUser(socket.id);   
+
+        if (typeof user !== 'undefined') {
+            console.log('User is defined.');
+            
+            io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+            io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
             return;
         }
-        console.log('No available rooms!');
 
-        // if (user == undefined || user.room == undefined || user.name == undefined) {
+        console.log('User is undefined. Not in a chat.');
+        socket.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms()))
+        
+    
+        // // if (rooms.getRooms().length > 0) {
+        // //     console.log(('More rooms than 1', rooms.getRooms() ));
+        // //     return;
+        // // }
+        // // console.log('No available rooms!');
+
+        // if (typeof user === undefined) {
+        //     console.log('user type', typeof user)
         //     console.log('Refreshed webpage in home page.');
         // } else {
+        //     console.log('We in da chat!');
+        //     console.log('user type', typeof user.room)
         //     const user = users.removeUser(socket.id);
     
         //     io.to(user.room).emit('updateUserList', users.getUserList(user.room));

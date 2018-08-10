@@ -4,23 +4,27 @@ socket.on('connect', function () {
     console.log('Connected from index.js');
     
 });
- 
-socket.on('updateRoomsList', function (rooms) {
-    console.log('Rooms: ', rooms[0]);
-    const ol = jQuery('<ol></ol>');
 
-    for (let i = 0; i < rooms.length; i++) {
-        console.log('ROOM', rooms[i].name)
-        ol.append(jQuery('<li></li>').text(rooms[i].name));
+socket.on('updateOpenRooms', function (roomsArrayWithUsers) {
+    console.log(`${'Rooms with users'}: ${JSON.stringify(roomsArrayWithUsers)}`);
+
+    const ol = jQuery('<ol></ol>');
+    const ul = jQuery('<ul></ul>');
+
+    for (let i = 0; i < roomsArrayWithUsers.length; i++) {
+        ol.append(jQuery('<li></li>').text(roomsArrayWithUsers[i].room));
+
+        for (let j = 0; j < roomsArrayWithUsers.length; j++) {
+            console.log('yup', roomsArrayWithUsers[j].users);
+            for (let k = 0; k < roomsArrayWithUsers[j].users.length; k++) {
+                ul.append(jQuery('<li></li>').text(JSON.stringify(roomsArrayWithUsers[j].users[k].name)));
+            }
+        }
     }
 
-    // rooms.forEach(function (room) {
-    //     ol.append(jQuery('<li></li>').text(room));
-    // });
 
     jQuery('#rooms').html(ol);
-});
+    jQuery('#users_in_room').html(ul);
 
-socket.on('updateUsersPerRoom', function (users) {
-    console.log(`${'room'}: ${users}`);
+
 });

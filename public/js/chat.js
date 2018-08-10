@@ -25,7 +25,7 @@ socket.on('connect', function (){
         } else {
             console.log('No error.');
         }
-    })
+    });
 });
 
 socket.on('newMessage', function (message) {
@@ -65,7 +65,6 @@ socket.on('updateUserList', function (users) {
 
 jQuery('#message-form').on('submit', function (e) {
     e.preventDefault();
-
     const messageTextBox = jQuery('[name=message]');
 
     socket.emit('createMessage', {
@@ -81,7 +80,6 @@ locationButton.on('click', function () {
     if (!navigator.geolocation) {
         return alert('Geolocation is not supported by your browser.');
     }
-
     locationButton.attr('disabled', 'disabled').text('Sending location...');
 
     navigator.geolocation.getCurrentPosition(function (position) {

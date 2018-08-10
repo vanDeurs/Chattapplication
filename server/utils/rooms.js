@@ -1,16 +1,11 @@
-// const {Users} = require('./users');
 const {removeDuplicates} = require('../utils/validation');
-
-// const users = new Users();
 
 class Rooms {
     constructor () {
         this.rooms = [];
     }
     addRoom (name) {
-        const room = {
-            name, 
-        };
+        const room = {name};
         this.rooms.push(room);
 
         return room;
@@ -26,7 +21,6 @@ class Rooms {
         }
         return room;
     }
-    
 }
 
 module.exports = {

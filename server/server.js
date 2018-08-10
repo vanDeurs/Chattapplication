@@ -74,25 +74,6 @@ io.on('connection', (socket) => {
 
         console.log('User is undefined. Not in a chat.');
         socket.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms()))
-        
-    
-        // // if (rooms.getRooms().length > 0) {
-        // //     console.log(('More rooms than 1', rooms.getRooms() ));
-        // //     return;
-        // // }
-        // // console.log('No available rooms!');
-
-        // if (typeof user === undefined) {
-        //     console.log('user type', typeof user)
-        //     console.log('Refreshed webpage in home page.');
-        // } else {
-        //     console.log('We in da chat!');
-        //     console.log('user type', typeof user.room)
-        //     const user = users.removeUser(socket.id);
-    
-        //     io.to(user.room).emit('updateUserList', users.getUserList(user.room));
-        //     io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
-        // }
 
     });
 });

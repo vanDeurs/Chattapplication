@@ -1,4 +1,4 @@
-let socket = io();
+const socket = io();
 
 function scrollToBottom () {
     const messages = jQuery('#messages');
@@ -16,8 +16,8 @@ function scrollToBottom () {
 }
 
 socket.on('connect', function (){
+    console.log('Connected from chat.js');
     const params = jQuery.deparam(window.location.search);
-
     socket.emit('join', params, function (err) {
         if (err) {
             alert(err);
@@ -65,6 +65,7 @@ socket.on('updateUserList', function (users) {
 
 socket.on('disconnect', function (){
     console.log('Disconnected from server!');
+    socket.emit('userDisconnects');
 });
 
 jQuery('#message-form').on('submit', function (e) {

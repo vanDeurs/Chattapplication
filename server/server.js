@@ -6,6 +6,7 @@ const socketIO = require('socket.io');
 const {generateMessage, generateLocationMessage} = require('./utils/message');
 const {isRealString} = require('./utils/validation');
 const {Users} = require('./utils/users');
+const {Rooms} = require('./utils/rooms');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -13,23 +14,33 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 const users = new Users();
+const rooms = new Rooms();
 
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-    console.log('New user connected!');
 
+    socket.emit('updateRoomsList', rooms.getRooms());
+
+    
     socket.on('join', (params, callback) => {
+        console.log('New user connected!');
+        
         if (!isRealString(params.name) || !isRealString(params.room)) {
             return callback('Name and Room name are required.');
         }
+        rooms.addRoom(params.room); // Add room to array of rooms
+        // rooms.addUserToRoom(socket.id, params.name, params.room); // Add user to array of users in that room
+        socket.emit('updateUsersPerRoom', users.getUserList(params.room)) // Update the list of users per room
+
+
         socket.join(params.room); // Create the room
         users.removeUser(socket.id); // Remove from any other rooms
         users.addUser(socket.id, params.name, params.room); // Add user to array of users
 
         io.to(params.room).emit('updateUserList', users.getUserList(params.room)); // Update the user list
         socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app!')); // Welcome message to user
-        socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`)); // Emit that a user has joined
+        // socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`)); // Emit that a user has joined
         callback();
         
     });
@@ -50,11 +61,34 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('disconnect', () => {
+    socket.on('userDisconnects', () => {
+        console.log('User disconnects!');
+        socket.emit('updateRoomsList', rooms.getRooms());
         const user = users.removeUser(socket.id);
-
+    
         io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+        io.to(user.room).emit('updateUsersPerRoom', users.getUserList(user.room));
         io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
+    })
+
+    socket.on('disconnect', () => {
+        socket.emit('updateRoomsList', rooms.getRooms());
+
+        if (rooms.getRooms().length > 0) {
+            console.log(('More rooms than 1', rooms.getRooms() ));
+            return;
+        }
+        console.log('No available rooms!');
+
+        // if (user == undefined || user.room == undefined || user.name == undefined) {
+        //     console.log('Refreshed webpage in home page.');
+        // } else {
+        //     const user = users.removeUser(socket.id);
+    
+        //     io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+        //     io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
+        // }
+
     });
 });
 

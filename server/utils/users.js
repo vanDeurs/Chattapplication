@@ -22,15 +22,17 @@ class Users {
         for (let u in rooms) {
             userRoom.push({room: rooms[u].name, users: []});
         }
+
+        console.log('Rooms: ', userRoom);
         
         for (let i = 0; i < this.users.length; i++) {
             for (let j in rooms) {
                 if (this.users[i].room == rooms[j].name) {
                     userRoom[j].users.push({id: this.users[i].id, name: this.users[i].name});
-                    console.log('Added user: \n', JSON.stringify(userRoom));
                 }
             }
         }
+        console.log('New userroom: \n', JSON.stringify(userRoom));
         return userRoom;
     } 
     

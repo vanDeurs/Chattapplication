@@ -20,9 +20,7 @@ app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
 
-    socket.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms()))
-    users.getAllUsers(rooms.getRooms());
-
+    io.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms()));
     
     socket.on('join', (params, callback) => {
         
@@ -30,7 +28,6 @@ io.on('connection', (socket) => {
             return callback('Name and Room are required.');
         }
         rooms.addRoom(params.room); // Add room to array of rooms
-        socket.emit('updateUsersPerRoom', users.getUserList(params.room)) // Update the list of users per room
 
         socket.join(params.room); // Create the room
         users.removeUser(socket.id); // Remove from any other rooms
@@ -39,6 +36,8 @@ io.on('connection', (socket) => {
         io.to(params.room).emit('updateUserList', users.getUserList(params.room)); // Update the user list
         socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app!')); // Welcome message to user
         socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`)); // Emit that a user has joined
+        
+        io.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms())); // Update the list of open rooms with users on the home page
         callback();
         
     });
@@ -60,7 +59,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        socket.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms()))
+        io.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms())); // Update the list of open rooms with users on the home page
 
         const user = users.removeUser(socket.id);   
 
@@ -73,7 +72,7 @@ io.on('connection', (socket) => {
         }
 
         console.log('User is undefined. Not in a chat.');
-        socket.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms()))
+        io.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms())); // Update the list of open rooms with users on the home page
 
     });
 });

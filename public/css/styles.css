@@ -195,8 +195,37 @@
   }
 
   /* INDEX.HTML */
+
+  .available-rooms h4 {
+    font-size: 23px;
+    color: darkgrey;
+    font-weight: 600;
+  }
   
-  .room {
+  .rooms {
     padding: 5px;
     border: 1px solid lightgrey;
+    list-style: none;
   }
+
+  .room__info {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .room__info h4 {
+    color: rgba(39,107,130,1);
+    font-size: 20px;
+    font-weight: 700;
+    margin-right: 5%;
+  }
+
+  #users span {
+    color: grey;
+    font-size: 15px;
+    font-weight: 600;
+    width: 100%;
+  }
+

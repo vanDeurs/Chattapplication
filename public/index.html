@@ -20,17 +20,29 @@
                     <label>Room name</label>
                     <input type="text" name="room" autocomplete="off" />
                 </div>
-                  <div class="available-rooms">
+                  <!-- <div class="available-rooms">
                       <h4>Rooms</h4>
                       <div id="rooms-wrapper">
                           <div class="rooms-container">
                               <div id="rooms"></div>
-                              <div id="users_in_room"></div>
                           </div>
                       </div>
-                  </div>
-                <div class="form-field">
-                    <button>Join</button>
+                  </div> -->
+                  <script id="rooms-available-template" type="text/template">
+                    <li class="rooms">
+                      <div class="room__info">
+                        <h4>{{room}}</h4>
+                        <div id="users">
+                            <span>{{users}}</span>
+                        </div>
+                      </div>
+                    </li>
+                  </script>
+
+                  <div id="rooms"></div>
+
+                  <div class="form-field">
+                    <button>Join room</button>
                 </div>
             </form>
         </div>

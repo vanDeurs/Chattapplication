@@ -72,8 +72,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        io.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms())); // Update the list of open rooms with users on the home page
-
         const user = users.removeUser(socket.id);   
 
         if (typeof user !== 'undefined') {
@@ -81,12 +79,11 @@ io.on('connection', (socket) => {
             
             io.to(user.room).emit('updateUserList', users.getUserList(user.room));
             io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
+            io.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms())); // Update the list of open rooms with users on the home page
             return;
         }
 
         console.log('User is undefined. Not in a chat.');
-        io.emit('updateOpenRooms', users.getAllUsers(rooms.getRooms())); // Update the list of open rooms with users on the home page
-
     });
 });
 

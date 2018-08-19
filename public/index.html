@@ -8,7 +8,7 @@
     </head>
     <body class="centered-form">
         <div class="centered-form__form">
-            <form action=/chat.html>
+            <form id="enter-form">
                 <div class="form-field">
                     <h3>Join a Chat</h3>
                 </div>
@@ -16,18 +16,11 @@
                     <label>Display name</label>
                     <input type="text" name="name" autofocus autocomplete="off" />
                 </div>
+                <span id="errorMessage"></span>
                 <div class="form-field">
                     <label>Room name</label>
                     <input type="text" name="room" autocomplete="off" />
                 </div>
-                  <!-- <div class="available-rooms">
-                      <h4>Rooms</h4>
-                      <div id="rooms-wrapper">
-                          <div class="rooms-container">
-                              <div id="rooms"></div>
-                          </div>
-                      </div>
-                  </div> -->
                   <script id="rooms-available-template" type="text/template">
                     <li class="rooms">
                       <div class="room__info">
@@ -39,10 +32,13 @@
                     </li>
                   </script>
 
-                  <div id="rooms"></div>
+                  <div class="rooms_container">
+                      <h4 id="rooms__header">Rooms</h4>
+                      <div id="rooms"></div>
+                  </div>
 
                   <div class="form-field">
-                    <button>Join room</button>
+                    <button id="#join-room">Join room</button>
                 </div>
             </form>
         </div>
@@ -50,6 +46,7 @@
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/libs/jquery-3.3.1.min.js"></script>
         <script src="/js/libs/mustache.js"></script>
+        <script src="/js/libs/deparam.js"></script>
         <script src="/js/index.js"></script>
     </body>
 </html>

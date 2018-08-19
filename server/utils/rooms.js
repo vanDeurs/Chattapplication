@@ -11,7 +11,7 @@ class Rooms {
         return room;
     }
     getRooms () {
-        const uniqueArray = removeDuplicates(this.rooms, "name");
+        const uniqueArray = removeDuplicates(this.rooms, 'name');
         return uniqueArray;
     } 
     deleteRoom (name) {

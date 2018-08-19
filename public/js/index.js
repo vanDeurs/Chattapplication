@@ -8,15 +8,19 @@ socket.on('connect', function () {
 socket.on('updateOpenRooms', function (roomsArrayWithUsers) {
     jQuery('#rooms').empty();
     console.log('Updating rooms...');
-    console.log('rams', roomsArrayWithUsers);
+
+    if (roomsArrayWithUsers.length < 1) {
+        return jQuery('#rooms').append('<p>No rooms are currently open.</p>');
+    }
 
     const template = jQuery('#rooms-available-template').html();
     let room = [];
 
     for (let i in roomsArrayWithUsers) {
-        console.log('Room: ', roomsArrayWithUsers[i].room);
+        console.log('Rooms length: ', roomsArrayWithUsers[i].room);
         room.push({room: roomsArrayWithUsers[i].room, users: []});
 
+        console.log('room: ', room)
         for (let j in roomsArrayWithUsers[i].users) {
             console.log('Users: ', roomsArrayWithUsers[i].users[j]);
             
@@ -34,26 +38,22 @@ socket.on('updateOpenRooms', function (roomsArrayWithUsers) {
     }
 });
 
-// socket.on('updateOpenRooms', function (roomsArrayWithUsers) {
-//     console.log(`${'Rooms with users'}: ${JSON.stringify(roomsArrayWithUsers)}`);
 
-//     const ol = jQuery('<ol></ol>');
-//     const ul = jQuery('<ul></ul>');
+jQuery('#enter-form').on('submit', function (e) {
+    console.log('Here we go!');
+    e.preventDefault();
+    const nameTextBox = jQuery('[name=name]');
+    const roomTextBox = jQuery('[name=room]');
+    const params = {name: nameTextBox.val(), room: roomTextBox.val()};
+    const errorMessage = jQuery('#errorMessage');
 
-//     for (let i in roomsArrayWithUsers) {
-//         ol.append(jQuery('<li><h1><h1></li>').text([roomsArrayWithUsers[i].room]));
-//         console.log('Room: ', roomsArrayWithUsers[i].room);
-
-//         for (let j in roomsArrayWithUsers[i].users) {
-//             console.log('Users: ', roomsArrayWithUsers[i].users[j]);
-//             ul.append(jQuery('<li></li>').text(([roomsArrayWithUsers[i].users[j].name])));
-//         }
-//     }
-
-
-
-//     jQuery('#rooms').html(ol);
-//     jQuery('#users_in_room').html(ul);
-
-
-// });
+    socket.emit('validation', params, function (err) {
+        console.log('validation');
+        if (err) {
+            errorMessage.text(err);
+            return;
+        } 
+        console.log('No error.');
+        window.location.href=`/chat.html?name=${nameTextBox.val()}&room=${roomTextBox.val()}`;
+    });
+});

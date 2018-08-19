@@ -4,6 +4,7 @@ class Users {
     }
     addUser (id, name, room) {
         const user = {id, name, room};
+        console.log('User added: ', user);
         this.users.push(user);
         return user;
     }
@@ -22,8 +23,6 @@ class Users {
         for (let u in rooms) {
             userRoom.push({room: rooms[u].name, users: []});
         }
-
-        console.log('Rooms: ', userRoom);
         
         for (let i = 0; i < this.users.length; i++) {
             for (let j in rooms) {
@@ -32,7 +31,6 @@ class Users {
                 }
             }
         }
-        console.log('New userroom: \n', JSON.stringify(userRoom));
         return userRoom;
     } 
     

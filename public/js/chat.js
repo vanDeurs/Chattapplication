@@ -19,9 +19,9 @@ socket.on('connect', function (){
     console.log('Connected from chat.js');
     const params = jQuery.deparam(window.location.search);
     socket.emit('join', params, function (err) {
+        console.log('join emit from chat.js')
         if (err) {
             alert(err);
-            window.location.href='/';
         } else {
             console.log('No error.');
         }
